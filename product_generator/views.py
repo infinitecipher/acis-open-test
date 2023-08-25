@@ -55,27 +55,32 @@ class GenerateProductView(APIView):
             product_description = serializer.validated_data["product_description"]
             vibe_words = serializer.validated_data["vibe_words"]
 
-            openai_instance = OpenAIChat()
+            try:
+                openai_instance = OpenAIChat()
 
-            product_names_list = self.generate_product_names(
-                openai_instance, product_description, vibe_words
-            )
+                product_names_list = self.generate_product_names(
+                    openai_instance, product_description, vibe_words
+                )
 
-            ad_transcripts = self.generate_ad_transcripts(
-                openai_instance, product_names_list
-            )
+                ad_transcripts = self.generate_ad_transcripts(
+                    openai_instance, product_names_list
+                )
 
-            safety_warning = self.generate_safety_warning(
-                openai_instance, product_names_list[0]
-            )
+                safety_warning = self.generate_safety_warning(
+                    openai_instance, product_names_list[0]
+                )
 
-            response_data = {
-                "product_names": product_names_list,
-                **ad_transcripts,
-                "safety_warning": safety_warning,
-            }
+                response_data = {
+                    "product_names": product_names_list,
+                    **ad_transcripts,
+                    "safety_warning": safety_warning,
+                }
 
-            return Response(response_data, status=status.HTTP_200_OK)
+                return Response(response_data, status=status.HTTP_200_OK)
+            except Exception as e:
+                return Response(str(e), status=status.HTTP_400_BAD_REQUEST)
+
+
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def generate_product_names(self, openai_instance, product_description, vibe_words):
