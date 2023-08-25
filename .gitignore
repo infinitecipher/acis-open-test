@@ -10,6 +10,8 @@ _build/
 **django_cache/
 *.sqlite3
 *.db
+.env
+.env.*
 
 # migrations
 */__pycache__/
